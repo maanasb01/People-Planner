@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s;
+    transition-delay: background-color 5000s, color 5000s;
+}
+
+/* Scrollbar modification */
+
+::-webkit-scrollbar {
+    width: 8px;
+} */
+
+/* Track */
+::-webkit-scrollbar-track {
+    background-color: inherit;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background-color: #a3b0b0b2;
+    border-radius: 5rem;
+    margin-right: 20px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background-color: #a9b2b6;
+}
