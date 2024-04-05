@@ -109,10 +109,10 @@ export default function CalenderComponent() {
                               </p>
                             ))}</Popover>}
             >
-              <li className="">
+              <ul className="">
                 <li className="truncate"><Badge /> <b>{holidayList[0].time}</b> - {holidayList[0].title}</li>
                 {moreCount > 0 && <li className="text-blue-500 hover:underline">{moreCount} more</li>}
-              </li>
+              </ul>
             </Whisper>
           
         </ul>

@@ -15,10 +15,13 @@ export const ActivityLogProvider = ({ children }) => {
   // Time logs
   const [logs, setLogs] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedDayWork, setSelectedDayWork] = useState({
-    hours: 0,
-    minutes: 0,
-  });
+
+  const [works,setWorks] =useState({
+    today:{hours:"00",minutes:"00"},
+    week:{hours:"00",minutes:"00"},
+    month:{hours:"00",minutes:"00"},
+    quarter:{hours:"00",minutes:"00"},
+  })
   const { fetchWithLoader } = useLoading();
 
   useEffect(() => {
@@ -35,10 +38,14 @@ export const ActivityLogProvider = ({ children }) => {
       );
 
       const fetchedDateLogs = await res.json();
-      
-      setDateLogs(fetchedDateLogs.data);
-      const hoursWorked = calculateTotalWorkTime(fetchedDateLogs.data);
-      setSelectedDayWork(hoursWorked);
+      console.log(fetchedDateLogs.data);
+
+      setDateLogs(fetchedDateLogs.data.logs);
+      console.log(fetchedDateLogs);
+      const hoursWorkedToday = calculateTodayWorkTime(fetchedDateLogs.data.logs);
+      setWorks(prevWorks=> ({...prevWorks,today:hoursWorkedToday}));
+      setAllWorks(fetchedDateLogs.data);
+
     }
     setDate();
   }, [selectedDate]);
@@ -61,15 +68,28 @@ export const ActivityLogProvider = ({ children }) => {
       };
     });
     setLogs(timeLogs);
-    const hoursWorked = calculateTotalWorkTime(dateLogs);
-    setSelectedDayWork(hoursWorked);
+
   }, [dateLogs]);
 
   function paddedNum(n) {
     return String(n).padStart(2, "0");
   }
 
-  function calculateTotalWorkTime(activities) {
+  // Set the Week, Month and Quarter works
+  function setAllWorks(data){
+    setWorks(prevWorks=>{
+
+      return {
+        ...prevWorks,
+        week:{hours:paddedNum(data.totalWorkDoneWeek.totalHours),minutes:paddedNum(data.totalWorkDoneWeek.totalMinutes)},
+        month:{hours:paddedNum(data.totalWorkDoneMonth.totalHours),minutes:paddedNum(data.totalWorkDoneMonth.totalMinutes)},
+        quarter:{hours:paddedNum(data.totalWorkDoneQuarter.totalHours),minutes:paddedNum(data.totalWorkDoneQuarter.totalMinutes)}
+      }
+
+    })
+  }
+
+  function calculateTodayWorkTime(activities) {
     const totalMilliseconds = activities.reduce((total, activity) => {
       if (activity.login && activity.logout) {
         const loginTime = new Date(activity.login).getTime();
@@ -97,7 +117,8 @@ export const ActivityLogProvider = ({ children }) => {
         setSelectedDate,
         dateLogs,
         setDateLogs,
-        selectedDayWork,
+        works,
+        setWorks
       }}
     >
       {children}

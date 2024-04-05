@@ -22,7 +22,6 @@ const userSchema = new Schema({
     activeLog:{
         type: Schema.Types.ObjectId,
         ref:'activitylog',
-        
     }
 },
 {timestamps:true});

@@ -287,6 +287,9 @@ router.post(
   }
 );
 
+
+
+
 router.get(
   "/alllogs/:date",
   tokenAuth,
@@ -315,12 +318,78 @@ router.get(
         },
       });
 
-      return res.status(200).json({ success: true, data: logs });
-    } catch (error) {
-      return res
-        .status(500)
-        .json({ success: false, message: "Internal Server Error" });
+    // Calculate start and end dates for the week, month, and quarter
+    const startOfWeek = new Date(extractedDate);
+    startOfWeek.setDate(extractedDate.getDate() - extractedDate.getDay());
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 7);
+
+    const startOfMonth = new Date(extractedDate.getFullYear(), extractedDate.getMonth(), 1);
+    const endOfMonth = new Date(extractedDate.getFullYear(), extractedDate.getMonth() + 1, 0);
+
+    const startOfQuarter = new Date(extractedDate.getFullYear(), Math.floor(extractedDate.getMonth() / 3) * 3, 1);
+    const endOfQuarter = new Date(extractedDate.getFullYear(), Math.floor(extractedDate.getMonth() / 3) * 3 + 3, 0);
+
+    // Fetch activity logs within each time frame
+    const weekLogs = await ActivityLog.find({
+      userId,
+      date: {
+        $gte: startOfWeek,
+        $lt: endOfWeek,
+      },
+    });
+
+    const monthLogs = await ActivityLog.find({
+      userId,
+      date: {
+        $gte: startOfMonth,
+        $lt: endOfMonth,
+      },
+    });
+
+    const quarterLogs = await ActivityLog.find({
+      userId,
+      date: {
+        $gte: startOfQuarter,
+        $lt: endOfQuarter,
+      },
+    });
+
+    // Calculate total work done for each time frame
+    const totalWorkDoneWeek = calculateTotalWork(weekLogs);
+    const totalWorkDoneMonth = calculateTotalWork(monthLogs);
+    const totalWorkDoneQuarter = calculateTotalWork(quarterLogs);
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        totalWorkDoneWeek,
+        totalWorkDoneMonth,
+        totalWorkDoneQuarter,
+        logs
+      },
+    });
+ }catch (error) {
+  return res
+    .status(500)
+    .json({ success: false, message: "Internal Server Error" });
+}
+
+// Helper function to calculate total work done
+function calculateTotalWork(logs) {
+ let totalWorkDone = 0;
+ logs.forEach(log => {
+    if (log.logout && log.login) {
+      const workDuration = log.logout - log.login;
+      totalWorkDone += workDuration;
     }
+ });
+
+ const totalHours = Math.floor(totalWorkDone / (1000 * 60 * 60));
+ const remainingMilliseconds = totalWorkDone % (1000 * 60 * 60);
+ const totalMinutes = Math.round(remainingMilliseconds / (1000 * 60));
+ return {totalHours,totalMinutes}
+}
   }
 );
 module.exports = router;

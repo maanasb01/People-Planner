@@ -5,7 +5,7 @@ import { HOST } from "../config/config";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function LogButtons() {
-  const { selectedDate, setSelectedDate, setDateLogs } = useActivityLog();
+  const { selectedDate, setSelectedDate, setDateLogs,setWorks } = useActivityLog();
   const [showLogButtons, setShowLogButtons] = useState(false);
   const { fetchWithLoader } = useLoading();
   const { user, setUser } = useAuth();
@@ -65,10 +65,44 @@ export default function LogButtons() {
             // If there are no previous logs, just push the current log (For the multiple days logout when there is no entry of current day and user is logging out)
             return [data.data.activityLog];
           } else {
-            const updatedLogs = [...prevLogs.slice(0, -1), data.data.activityLog];
+            const updatedLogs = [
+              ...prevLogs.slice(0, -1),
+              data.data.activityLog,
+            ];
             return updatedLogs;
           }
+
+        
+
+
         });
+          // Calculate the new time difference for the current log
+          const currentLog = data.data.activityLog;
+          console.log(currentLog);
+          const timeDifference = new Date(currentLog.logout) - new Date(currentLog.login);
+          console.log("time diff: ",timeDifference);
+
+          // Convert the time difference to hours and minutes
+          const totalAdditionalMins = Math.floor(timeDifference / (1000 * 60));
+
+          console.log("Total Additional Minutes:", totalAdditionalMins);
+          
+
+          setWorks(prevWorks=>{
+            const updatedWorks = {...prevWorks};
+
+            for(let [key,val] of Object.entries(updatedWorks)){
+              let totalMins = parseInt(val.hours)*60 + parseInt(val.minutes);
+              totalMins = totalMins + totalAdditionalMins;
+
+              updatedWorks[key] = {
+                hours: Math.floor(totalMins/60).toString().padStart(2,0),
+                minutes: Math.round(totalMins%60).toString().padStart(2,0)}
+            }
+
+            return updatedWorks;
+
+          })
       }
     } catch (error) {
       console.error("From Error:", error.message);
@@ -81,14 +115,14 @@ export default function LogButtons() {
         disabled={!showLogButtons}
         className="disabled:border-gray-500 disabled:text-gray-600 disabled:cursor-default px-2 py-1 border border-green-400 text-green-500 hover:border-green-300 hover:text-green-300"
       >
-        Login
+        TimeIN
       </button>
       <button
         onClick={setLogout}
         disabled={!showLogButtons}
         className="disabled:border-gray-500 disabled:text-gray-600 disabled:cursor-default px-2 py-1 border border-red-400 text-red-500 hover:border-red-300 hover:text-red-300"
       >
-        Log Out
+        TimeOut
       </button>
     </div>
   );
