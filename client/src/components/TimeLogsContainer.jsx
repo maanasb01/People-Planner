@@ -1,12 +1,7 @@
 import { useActivityLog } from "../contexts/ActivityLogContext";
 
 export default function TimeLogsContainer() {
-  const {
-    selectedDate,
-
-    works,
-    setWorks
-  } = useActivityLog();
+  const { selectedDate, works } = useActivityLog();
   const { logs } = useActivityLog();
 
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -25,7 +20,7 @@ export default function TimeLogsContainer() {
     "Dec",
   ];
   return (
-    <div className=" flex flex-col space-y-3 items-center  xl:w-2/6 border h-2/4 xl:h-3/4 mt-6 rounded-2xl mx-4  xl:overflow-hidden">
+    <div className=" flex flex-col space-y-3 items-center  h-2/4 xl:h-3/4 border  mt-6 rounded-2xl   xl:overflow-hidden">
       <p className="text-xl mt-4">
         Time Logs for:
         <span className="text-orange-300">

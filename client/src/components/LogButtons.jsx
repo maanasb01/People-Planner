@@ -5,10 +5,10 @@ import { HOST } from "../config/config";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function LogButtons() {
-  const { selectedDate, setSelectedDate, setDateLogs,setWorks } = useActivityLog();
+  const { selectedDate, setDateLogs, setWorks } = useActivityLog();
   const [showLogButtons, setShowLogButtons] = useState(false);
   const { fetchWithLoader } = useLoading();
-  const { user, setUser } = useAuth();
+  const { setUser } = useAuth();
 
   useEffect(() => {
     setShowLogButtons(isSelectedDateToday());
@@ -38,8 +38,13 @@ export default function LogButtons() {
       if (data.data?.user) {
         setUser(data.data.user);
         setDateLogs((prevLogs) => {
-          const updatedLogs = [...prevLogs, data.data.activityLog];
-          return updatedLogs;
+          if (prevLogs.length === 0) {
+            // If there are no previous logs, just push the current log (For the multiple days logout when there is no entry of current day and user is logging out)
+            return [data.data.activityLog];
+          } else {
+            const updatedLogs = [...prevLogs, data.data.activityLog];
+            return updatedLogs;
+          }
         });
       }
     } catch (error) {
@@ -71,45 +76,41 @@ export default function LogButtons() {
             ];
             return updatedLogs;
           }
-
-        
-
-
         });
-          // Calculate the new time difference for the current log
-          const currentLog = data.data.activityLog;
-          console.log(currentLog);
-          const timeDifference = new Date(currentLog.logout) - new Date(currentLog.login);
-          console.log("time diff: ",timeDifference);
+        // Calculate the new time difference for the current log
+        const currentLog = data.data.activityLog;
+        const timeDifference =
+          new Date(currentLog.logout) - new Date(currentLog.login);
 
-          // Convert the time difference to hours and minutes
-          const totalAdditionalMins = Math.floor(timeDifference / (1000 * 60));
+        // Convert the time difference to hours and minutes
+        const totalAdditionalMins = Math.floor(timeDifference / (1000 * 60));
 
-          console.log("Total Additional Minutes:", totalAdditionalMins);
-          
+        setWorks((prevWorks) => {
+          const updatedWorks = { ...prevWorks };
 
-          setWorks(prevWorks=>{
-            const updatedWorks = {...prevWorks};
+          for (let [key, val] of Object.entries(updatedWorks)) {
+            let totalMins = parseInt(val.hours) * 60 + parseInt(val.minutes);
+            totalMins = totalMins + totalAdditionalMins;
 
-            for(let [key,val] of Object.entries(updatedWorks)){
-              let totalMins = parseInt(val.hours)*60 + parseInt(val.minutes);
-              totalMins = totalMins + totalAdditionalMins;
+            updatedWorks[key] = {
+              hours: Math.floor(totalMins / 60)
+                .toString()
+                .padStart(2, 0),
+              minutes: Math.round(totalMins % 60)
+                .toString()
+                .padStart(2, 0),
+            };
+          }
 
-              updatedWorks[key] = {
-                hours: Math.floor(totalMins/60).toString().padStart(2,0),
-                minutes: Math.round(totalMins%60).toString().padStart(2,0)}
-            }
-
-            return updatedWorks;
-
-          })
+          return updatedWorks;
+        });
       }
     } catch (error) {
       console.error("From Error:", error.message);
     }
   }
   return (
-    <div className="flex space-x-2 w-fit ml-auto mr-4">
+    <div className="flex space-x-2 w-fit  mr-4">
       <button
         onClick={setLogin}
         disabled={!showLogButtons}

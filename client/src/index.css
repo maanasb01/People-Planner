@@ -34,3 +34,7 @@ input:-webkit-autofill:active {
 ::-webkit-scrollbar-thumb:hover {
     background-color: #a9b2b6;
 }
+
+.rs-picker-toolbar-ranges.rs-stack{
+    display: none;
+}

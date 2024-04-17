@@ -4,11 +4,16 @@ import { useLoading } from "../contexts/LoadingContext";
 import { HOST } from "../config/config";
 import menuIcon from "../assets/menu.svg";
 import userDummyImg from "../assets/user.svg";
+import LeavesManager from "./leaves/userLeaveManager/LeavesManager";
+import ManagerLeaveManager from "./leaves/managerLeaveManager/ManagerLeaveManager";
 
 export default function Sidebar() {
   const { user, setUser } = useAuth();
   const { fetchWithLoader } = useLoading();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isUserLeaveManagerOpen, setIsUserLeaveManagerOpen] = useState(false);
+  const [isManagerLeaveManagerOpen, setIsManagerLeaveManagerOpen] =
+    useState(false);
 
   async function handleLogout() {
     try {
@@ -37,7 +42,7 @@ export default function Sidebar() {
           isSidebarOpen ? " translate-x-0" : " -translate-x-full"
         }`}
       >
-       {/* Sidebar Closing Button */}
+        {/* Sidebar Closing Button */}
         <button
           className="h-6 w-6 absolute right-2 top-2 cursor-pointer"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -52,7 +57,9 @@ export default function Sidebar() {
           <p>{user.email}</p>
         </div>
         <div>
-          <p className={`${user?.isActive?"text-teal-400":"text-red-500"}`}>{user?.isActive?"Active":"Not Active"}</p>
+          <p className={`${user?.isActive ? "text-teal-400" : "text-red-500"}`}>
+            {user?.isActive ? "Active" : "Not Active"}
+          </p>
         </div>
         <div className=" mt-4">
           <button
@@ -62,6 +69,26 @@ export default function Sidebar() {
             Logout
           </button>
         </div>
+
+        <div className="pt-3">
+          <button
+            onClick={() => setIsUserLeaveManagerOpen(true)}
+            className="px-2 py-1 cursor-pointer  border border-yellow-500 text-yellow-400 hover:text-yellow-500 hover:border-yellow-500 hover:-translate-y-1"
+          >
+            Leaves
+          </button>
+        </div>
+
+        {user?.role === "manager" && (
+          <div className="pt-6">
+            <button
+              onClick={() => setIsManagerLeaveManagerOpen(true)}
+              className="px-2 py-1 cursor-pointer  border border-orange-500 text-orange-400 hover:text-orange-500 hover:border-orange-500 hover:-translate-y-1"
+            >
+              Manage Requested Leaves
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Sidebar Closing Button */}
@@ -73,6 +100,15 @@ export default function Sidebar() {
       >
         <img src={menuIcon} alt="X" />
       </div>
+
+      <LeavesManager
+        isLeaveManagerOpen={isUserLeaveManagerOpen}
+        setIsLeaveManagerOpen={setIsUserLeaveManagerOpen}
+      />
+      <ManagerLeaveManager
+        isManagerModalOpen={isManagerLeaveManagerOpen}
+        setIsManagerModalOpen={setIsManagerLeaveManagerOpen}
+      />
     </>
   );
 }

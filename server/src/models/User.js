@@ -22,6 +22,16 @@ const userSchema = new Schema({
     activeLog:{
         type: Schema.Types.ObjectId,
         ref:'activitylog',
+    },
+    role:{
+        type:String,
+        default:'member',
+        enum:['member','manager']
+    },
+    managerId:{
+        type: Schema.Types.ObjectId,
+        ref:'user',
+        default:null,
     }
 },
 {timestamps:true});

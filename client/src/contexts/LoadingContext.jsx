@@ -21,8 +21,6 @@ export function LoadingProvider({ children }) {
   const [isSessionExModalOpen, setIsSessionExModalOpen] = useState(false);
   const toaster = useToaster();
 
-
-  
   useEffect(() => {
     if (isLoading) {
       setIntervalId(
@@ -52,36 +50,44 @@ export function LoadingProvider({ children }) {
     startLoading();
     try {
       const response = await fetch(url, options);
-      
+
       if (!response.ok) {
-        if(response.status===401){
+        if (response.status === 401) {
           setIsSessionExModalOpen(true);
           return;
         }
         const data = await response.json();
         // setAlertMessage(data.message)
         showAlert(data.message);
-        return ;
+        return;
       }
       return response;
     } catch (error) {
-      console.error('Error:', error);
-      
+      console.error("Error:", error);
+
       throw error; // Rethrow the error to be handled by the caller
-    }  finally {
+    } finally {
       stopLoading();
     }
   };
-  
-    function showAlert(msg) {
-      const message = (
-        <Message showIcon type={"error"} closable>
-          <strong>Error!</strong> {msg || "Something Went Wrong."}
-        </Message>
-      );
-      toaster.push(message, { placement: "topCenter", duration: 4000 });
-    }
 
+  function showAlert(msg) {
+    const message = (
+      <Message showIcon type={"error"} closable>
+        <strong>Error!</strong> {msg || "Something Went Wrong."}
+      </Message>
+    );
+    toaster.push(message, { placement: "topCenter", duration: 4000 });
+  }
+
+  function showSuccess(msg) {
+    const message = (
+      <Message showIcon type={"success"} closable>
+        <strong>Success!</strong> {msg || "Successful."}
+      </Message>
+    );
+    toaster.push(message, { placement: "topCenter", duration: 4000 });
+  }
 
   return (
     <LoadingContext.Provider
@@ -93,12 +99,13 @@ export function LoadingProvider({ children }) {
         fetchWithLoader,
         isLoading,
         isSessionExModalOpen,
-        setIsSessionExModalOpen
+        setIsSessionExModalOpen,
+        showSuccess,
+        showAlert
       }}
     >
       <SessionModal />
-     
-   
+
       {children}
     </LoadingContext.Provider>
   );
