@@ -9,7 +9,7 @@ export default function ManagerLeaveManager({
   setIsManagerModalOpen,
 }) {
   const [displayedLeavesType, setDisplayedLeavesType] = useState("toProcess");
-  const { showSuccess, showAlert } = useLoading();
+  const { showSuccess, showAlert,fetchWithLoader } = useLoading();
   const [leaves, setLeaves] = useState(null);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export default function ManagerLeaveManager({
 
   async function getReqLeaves() {
     try {
-      const res = await fetch(`${HOST}/leave/getrequestedleaves`, {
+      const res = await fetchWithLoader(`${HOST}/leave/getrequestedleaves`, {
         method: "GET",
         credentials: "include",
       });
@@ -38,7 +38,7 @@ export default function ManagerLeaveManager({
   // Status here is what the status should be set.
   async function manageRequestedLeave(leaveId, status) {
     try {
-      const req = await fetch(`${HOST}/leave/${leaveId}/manage`, {
+      const req = await fetchWithLoader(`${HOST}/leave/${leaveId}/manage`, {
         method: "PUT",
         credentials: "include",
         headers: {

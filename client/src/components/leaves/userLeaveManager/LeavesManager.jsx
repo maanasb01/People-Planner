@@ -28,7 +28,7 @@ export default function LeavesManager({
   const [endTime, setEndTime] = useState({ hrs: 12, mins: 0, period: "AM" });
   const [appliedLeaves, setAppliedLeaves] = useState(null);
   const { user } = useAuth();
-  const { showSuccess, showAlert } = useLoading();
+  const { showSuccess, showAlert,fetchWithLoader, } = useLoading();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,7 +37,7 @@ export default function LeavesManager({
 
       if (selectedRegularLeaves.length > 1) {
         try {
-          const res = await fetch(`${HOST}/leave`, {
+          const res = await fetchWithLoader(`${HOST}/leave`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -88,7 +88,7 @@ export default function LeavesManager({
       }
 
       try {
-        const res = await fetch(`${HOST}/leave`, {
+        const res = await fetchWithLoader(`${HOST}/leave`, {
           method: "POST",
           credentials: "include",
           headers: {

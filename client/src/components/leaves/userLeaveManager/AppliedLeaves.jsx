@@ -3,10 +3,12 @@ import { DatePicker, Stack, TagPicker } from "rsuite";
 import { HOST } from "../../../config/config";
 import Leave from "../Leave";
 import { formatDate } from "../../../helpers/leaveHelpers";
+import { useLoading } from "../../../contexts/LoadingContext";
 
 export default function AppliedLeaves({ appliedLeaves, setAppliedLeaves }) {
   const [selectedMonthYear, setSelectedMonthYear] = useState(new Date());
   const [filterTags, setFilterTags] = useState({ type: [], status: [] });
+  const { fetchWithLoader } = useLoading();
 
   useEffect(() => {
     if (selectedMonthYear !== null) {
@@ -22,7 +24,7 @@ export default function AppliedLeaves({ appliedLeaves, setAppliedLeaves }) {
 
   async function getLeaves() {
     try {
-      const res = await fetch(
+      const res = await fetchWithLoader(
         `${HOST}/leave/getleaves/${selectedMonthYear.toISOString()}`,
         {
           method: "GET",
