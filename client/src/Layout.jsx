@@ -13,7 +13,6 @@ import SignUp from "./components/authComponents/SignUp";
 import Application from "./pages/Application";
 import LandingPage from "./pages/LandingPage";
 
-
 export default function Layout() {
   const { user } = useAuth();
 
@@ -22,7 +21,9 @@ export default function Layout() {
       <Route errorElement={<ErrorPage />}>
         <Route
           path="/"
-          element={!user ? <LandingPage /> : <Navigate to={"/app"} replace={true} />}
+          element={
+            !user ? <LandingPage /> : <Navigate to={"/app"} replace={true} />
+          }
         >
           <Route path={""} element={<Login />} />
           <Route path={"/login"} element={<Login />} />

@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import CalenderComponent from "../components/CalenderComponent";
 import Sidebar from "../components/Sidebar";
 import { ActivityLogProvider } from "../contexts/ActivityLogContext";
