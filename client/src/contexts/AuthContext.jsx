@@ -11,8 +11,11 @@ export const useAuth = () => {
 //Top Most Component of the whole App. Checks whether user is authenticated or not. If not, user gets redirected to login page.
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-
   const { startLoading, stopLoading } = useLoading();
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   async function getUser() {
     startLoading();
@@ -26,6 +29,7 @@ export const AuthProvider = ({ children }) => {
       if (data.user) {
         console.log(data.user);
         setUser(data.user);
+
         return;
       } else {
         setUser(null);
@@ -36,9 +40,6 @@ export const AuthProvider = ({ children }) => {
       stopLoading();
     }
   }
-  useEffect(() => {
-    getUser();
-  }, []);
 
   return (
     <AuthContext.Provider value={{ user, setUser, getUser }}>

@@ -60,8 +60,8 @@ export default function Login() {
         if (data.success) {
           setSuccess("Login successful!");
           setError("");
-          setUser(data.user); 
           navigate("/app",{replace: true});
+          setUser(data.user); 
 
         } else {
           setError(data.message);

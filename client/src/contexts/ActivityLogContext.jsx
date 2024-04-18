@@ -10,7 +10,7 @@ export const useActivityLog = () => {
 
 export const ActivityLogProvider = ({ children }) => {
   // Logs to Display
-  //Would conatin array of dates objects from backend
+  // Would conatin array of dates objects from backend
   const [dateLogs, setDateLogs] = useState([]);
   // Time logs
   const [logs, setLogs] = useState([]);
@@ -38,10 +38,7 @@ export const ActivityLogProvider = ({ children }) => {
       );
 
       const fetchedDateLogs = await res.json();
-      console.log(fetchedDateLogs.data);
-
       setDateLogs(fetchedDateLogs.data.logs);
-      console.log(fetchedDateLogs);
       const hoursWorkedToday = calculateTodayWorkTime(fetchedDateLogs.data.logs);
       setWorks(prevWorks=> ({...prevWorks,today:hoursWorkedToday}));
       setAllWorks(fetchedDateLogs.data);

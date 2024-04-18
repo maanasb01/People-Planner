@@ -102,7 +102,8 @@ router.post(
           _id: user._id,
           name: user.name,
           email: user.email,
-          isActive:user.isActive
+          isActive:user.isActive,
+          role:user.role
         };
   
         res.cookie("authToken", authToken, {

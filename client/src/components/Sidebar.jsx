@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useLoading } from "../contexts/LoadingContext";
 import { HOST } from "../config/config";
@@ -8,12 +8,11 @@ import LeavesManager from "./leaves/userLeaveManager/LeavesManager";
 import ManagerLeaveManager from "./leaves/managerLeaveManager/ManagerLeaveManager";
 
 export default function Sidebar() {
-  const { user, setUser } = useAuth();
+  const { user, setUser,loadingUser } = useAuth();
   const { fetchWithLoader } = useLoading();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isUserLeaveManagerOpen, setIsUserLeaveManagerOpen] = useState(false);
-  const [isManagerLeaveManagerOpen, setIsManagerLeaveManagerOpen] =
-    useState(false);
+  const [isManagerLeaveManagerOpen, setIsManagerLeaveManagerOpen] = useState(false);
 
   async function handleLogout() {
     try {
@@ -79,7 +78,7 @@ export default function Sidebar() {
           </button>
         </div>
 
-        {user?.role === "manager" && (
+        {user && user.role === "manager" && (
           <div className="pt-6">
             <button
               onClick={() => setIsManagerLeaveManagerOpen(true)}
@@ -101,14 +100,14 @@ export default function Sidebar() {
         <img src={menuIcon} alt="X" />
       </div>
 
-      <LeavesManager
+      {isUserLeaveManagerOpen && <LeavesManager
         isLeaveManagerOpen={isUserLeaveManagerOpen}
         setIsLeaveManagerOpen={setIsUserLeaveManagerOpen}
-      />
-      <ManagerLeaveManager
+      />}
+      {isManagerLeaveManagerOpen && <ManagerLeaveManager
         isManagerModalOpen={isManagerLeaveManagerOpen}
         setIsManagerModalOpen={setIsManagerLeaveManagerOpen}
-      />
+      />}
     </>
   );
 }
