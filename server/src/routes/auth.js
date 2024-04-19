@@ -46,11 +46,15 @@ router.post(
       });
 
       const authToken = assignToken(user);
+      const manager = await User.findOne({role:"manager"});
+      let managerId = manager._id || null;
       const userResponse = {
         _id: user._id,
         name: user.name,
         email: user.email,
-        isActive:user.isActive
+        isActive:user.isActive,
+        role:user.role,
+        managerId:managerId
       };
 
       res
@@ -103,7 +107,8 @@ router.post(
           name: user.name,
           email: user.email,
           isActive:user.isActive,
-          role:user.role
+          role:user.role,
+          managerId:user.managerId
         };
   
         res.cookie("authToken", authToken, {

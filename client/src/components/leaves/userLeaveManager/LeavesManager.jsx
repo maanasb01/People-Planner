@@ -31,9 +31,9 @@ export default function LeavesManager({
   const { showSuccess, showAlert,fetchWithLoader, } = useLoading();
 
   const handleSubmit = async (e) => {
+    console.log(user);
     e.preventDefault();
     if (leaveType === "regular") {
-      console.log(selectedRegularLeaves);
 
       if (selectedRegularLeaves.length > 1) {
         try {

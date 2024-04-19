@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { DatePicker, Stack, TagPicker } from "rsuite";
-import { HOST } from "../../../config/config";
+
 import Leave from "../Leave";
 import { formatDate } from "../../../helpers/leaveHelpers";
 import { useLoading } from "../../../contexts/LoadingContext";
+import { HOST } from "../../../config/config";
 
 export default function AppliedLeaves({ appliedLeaves, setAppliedLeaves }) {
   const [selectedMonthYear, setSelectedMonthYear] = useState(new Date());
