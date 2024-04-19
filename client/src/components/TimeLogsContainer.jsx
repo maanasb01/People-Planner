@@ -20,7 +20,7 @@ export default function TimeLogsContainer() {
     "Dec",
   ];
   return (
-    <div className=" flex flex-col space-y-3 items-center  h-2/4 xl:h-3/4 border  mt-6 rounded-2xl   xl:overflow-hidden">
+    <div className=" flex flex-col space-y-3 items-center min-h-64  h-2/4 xl:h-3/4 border  mt-6 rounded-2xl   xl:overflow-hidden">
       <p className="text-xl mt-4">
         Time Logs for:
         <span className="text-orange-300">
